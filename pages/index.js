@@ -46,11 +46,7 @@ function ProfileRelationsBox(props){
 
 export default function Home() {
   const githubUser = 'DenilsonMelo'
-  const [communities, setCommunities] = React.useState([{
-    id: '980980888898098967656',
-    title: 'Eu odeio acordar cedo',
-    image: 'https://alurakut.vercel.app/capa-comunidade-01.jpg'
-  }])
+  const [communities, setCommunities] = React.useState([])
   const pessoasFavoritas = [
     'peas', 
     'omariosouto', 
@@ -69,6 +65,29 @@ export default function Home() {
     })
     .then((responseReady) => {
       setFollowers(responseReady)
+    })
+
+    //API GraphQL
+    fetch('https://graphql.datocms.com/', {
+      method: 'POST',
+      headers: {
+        'Authorization': 'a1f04843ae1487a159c9cf7d27221b',
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
+      body: JSON.stringify({ "query": `query {
+        allCommunities{
+          id
+          title
+          creatorSlug
+          imageUrl
+        }
+      }` })
+    })
+    .then((response) => response.json())
+    .then((responseFull) => {
+      const communitiesDatoCms = responseFull.data.allCommunities
+      setCommunities(communitiesDatoCms)
     })
   }, [])
 
@@ -91,12 +110,24 @@ export default function Home() {
               const data = new FormData(event.target)
 
               const community = {
-                id: new Date().toISOString(),
                 title: data.get('title'),
-                image: data.get('image')
+                imageUrl: data.get('image'),
+                creatorSlug: 'denilsonmelo',
               }
-              const updatedCommunities = [...communities, community]
-              setCommunities(updatedCommunities)
+
+              fetch('/api/communities', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(community)
+              }).then(async (response) => {
+                const datas = await response.json()
+                const community = datas.createRegister
+                const updatedCommunities = [...communities, community]
+                setCommunities(updatedCommunities)
+              })
+
             }}>
               <div>
                 <input 
@@ -141,8 +172,8 @@ export default function Home() {
               {communities.map((itemAtual) => {
                 return(
                   <li key={itemAtual.id}>
-                    <a href={`/users/${itemAtual.title}`} >
-                      <img src={itemAtual.image} />
+                    <a href={`/communities/${itemAtual.id}`} >
+                      <img src={itemAtual.imageUrl} />
                       <span>{itemAtual.title}</span>
                     </a>
                   </li>
