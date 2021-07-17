@@ -6,6 +6,15 @@ const Box = styled.div`
   padding: 16px;
 
   margin-bottom: 10px;
+
+  img{
+    border-radius: 8px;
+    margin-bottom: 4px
+  }
+  
+  p{
+    margin: 8px 0;
+  }
   
   .boxLink{
     font-size: 14px;
@@ -23,7 +32,7 @@ const Box = styled.div`
   .subTitle{
     font-size: 18px;
     font-weight: 400;
-    margin-bottom: 400;
+    margin-bottom: 20px;
   }
   
   .smallTitle{

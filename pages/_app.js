@@ -31,10 +31,11 @@ const GlobalStyle = createGlobalStyle`
 const theme = {
   colors: {
     primary: '#0070f3',
+    background: '#ebe'
   },
 }
 
-export default function App({ Component, pageProps }) {
+export default function App({ Component, pageProps }) { 
   return (
     <>
       <GlobalStyle />
